@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suporte</title>
+    <!-- Incluindo Bootstrap CSS (versão mais recente) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Estilos personalizados -->
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            margin-top: 56px;
+        }
+
+        .navbar-dark.bg-success {
+            background-color: #201b2c !important;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-dark .navbar-brand,
+        .navbar-dark .nav-link {
+            color: #77ffc0 !important;
+            font-weight: bold;
+        }
+
+        .navbar-dark .nav-link:hover {
+            color: #00ff88 !important;
+        }
+
+        .btn-custom {
+            background-color: #77ffc0;
+            color: #ffffff;
+            border: none;
+            border-radius: 50px;
+            padding: 10px 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-custom:hover {
+            background-color: #00ff88;
+        }
+
+        .footer-custom {
+            background-color: #343a40;
+            color: #ffffff;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        .imagem-suporte,
+        .imagem-solicitando {
+            width: 150px;
+            height: 150px;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            border-radius: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .jumbotron-custom {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            font-size: 1.1rem;
+            color: #333;
+            font-weight: bold;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 15px;
+            margin-top: 5px;
+            font-size: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #77ffc0;
+            outline: none;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 150px; /* Ajustado para garantir que a área de texto seja visível */
+        }
+
+        button[type="submit"] {
+            background-color: #77ffc0;
+            color: #201b2c;
+            padding: 12px 25px;
+            font-size: 1rem;
+            border-radius: 50px;
+            border: none;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #00ff88;
+        }
+
+        button[type="submit"]:focus {
+            outline: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">Histologia Online</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="/conteudos/">Conteúdos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="/atividades/">Atividades</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="/chat/">Chat</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="/suporte/">Suporte</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="/bibliografia/">Bibliografia</a>
+                    </li>
+                    {% if user.is_superuser %}
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="/admin/">Administração</a>
+                    </li>
+                    {% endif %}
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="{% url 'logout' %}">Logout</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    {% if messages %}
+    <div class="container mt-3 pt-2" id="message-container">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="container mt-5">
+        <p>
+            {% load static %}
+            <img src="{% static 'suporte.png' %}" alt="My image" class="imagem-suporte">
+            <img src="{% static 'solicitando.png' %}" alt="My image" class="imagem-solicitando">
+        </p>
+        <p>Olá, está com algum problema?</br> Entre em contato solicitando nosso suporte</p>
+        <h3 class="mt-4 mb-4 pt-2">Solicitar Suporte</h3>
+        <form method="post" class="jumbotron jumbotron-custom">
+            {% csrf_token %}
+            <div class="form-group mb-3">
+                {{ form.as_p }}
+            </div>
+            <button type="submit" class="btn btn-custom">Registrar</button>
+        </form>
+    </div>
+
+    <!-- Incluindo jQuery e Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script>
+        $(document).ready(function () {
+            // Adicione qualquer código JavaScript/jQuery personalizado aqui
+            console.log('Bootstrap 5 customizado carregado com sucesso!');
+        });
+
+        $(document).ready(function () {
+            // Verifica se o contêiner de mensagens existe
+            if ($('#message-container').length) {
+                console.log('Contêiner de mensagens encontrado. Ocultando após 5 segundos...');
+                // Oculta o contêiner de mensagens após 5 segundos
+                setTimeout(function () {
+                    $('#message-container').fadeOut('slow');
+                }, 5000);
+            }
+        });
+    </script>
+
+</body>
+
+</html>

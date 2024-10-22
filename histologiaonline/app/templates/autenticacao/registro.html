@@ -1,0 +1,374 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Usuário</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wgth@400;700&display=swap');
+
+        body {
+            margin: 0;
+            font-family: 'Noto Sans', sans-serif;
+            overflow: hidden;
+        }
+
+        body * {
+            box-sizing: border-box;
+        }
+
+        .main-login {
+            width: 100vw;
+            height: 100vh;
+            background: #201b2c;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .left-login {
+            width: 50vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .left-login>h1 {
+            font-size: 3vw;
+            color: #77ffc0;
+        }
+
+        .left-login-image {
+            width: 35vw;
+        }
+
+        .right-login {
+            width: 50vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card-login {
+            width: 90%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 30px 35px;
+            background: #2f2841;
+            border-radius: 20px;
+            box-shadow: 0px 10px 40px #00000056;
+        }
+
+        .card-login>h3 {
+            color: #00ff88;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .textfield {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            margin: 10px 0px;
+            margin-bottom: 15px;
+        }
+
+        .textfield>input,
+        .textfield>select {
+            width: 100%;
+            border: none;
+            border-radius: 10px;
+            padding: 15px;
+            background: #514869;
+            color: #f0ffffde;
+            font-size: 12pt;
+            box-shadow: 0px 10px 40px #00000056;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .textfield>label {
+            color: #f0ffffde;
+            margin-bottom: 10px;
+        }
+
+        .textfield>input::placeholder,
+        .textfield>select::placeholder {
+            color: #f0ffff94;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 16px 0px;
+            margin-bottom: 15px;
+            border: none;
+            border-radius: 8px;
+            outline: none;
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 4px;
+            color: #2b134b;
+            background: #00ff88;
+            cursor: pointer;
+            box-shadow: 0px 10px 40px -12px #00ff8052;
+        }
+
+        .btn-cadastro {
+            width: 100%;
+            padding: 16px 0px;
+            border: none;
+            border-radius: 8px;
+            outline: none;
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 4px;
+            color: #2b134b;
+            background: #4efcb5;
+            cursor: pointer;
+            box-shadow: 0px 10px 40px -12px #00ff8052;
+        }
+
+        @media only screen and (max-width: 950px) {
+            .card-login {
+                width: 85%;
+            }
+        }
+
+        @media only screen and (max-width: 600px) {
+            .main-login {
+                flex-direction: column;
+            }
+
+            .left-login>h3 {
+                display: none;
+            }
+
+            .left-login {
+                width: 100%;
+                height: auto;
+            }
+
+            .right-login {
+                width: 100%;
+                height: auto;
+            }
+
+            .left-login-image {
+                width: 50vw;
+            }
+
+            .card-login {
+                width: 90%;
+            }
+        }
+
+        /* Estilo de duas colunas */
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .form-row .textfield {
+            width: 48%;
+        }
+
+        .form-row .textfield:nth-child(odd) {
+            margin-right: 4%;
+        }
+
+        .password-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .password-container input {
+            width: 100%;
+            padding: 15px;
+            background: #514869;
+            color: #f0ffffde;
+            font-size: 12pt;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0px 10px 40px #00000056;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            /* Removendo o fundo */
+            border: none;
+            /* Removendo borda */
+            cursor: pointer;
+        }
+
+        .toggle-password i {
+            font-size: 20px;
+            color: #FFF;
+            /* Cor do ícone */
+        }
+
+        tyle>
+
+        /* Estilos para as mensagens */
+        .messages-container {
+            margin-top: 20px;
+        }
+
+        .alert {
+            color: white;
+            /* Texto branco */
+            background-color: #333;
+            /* Cor de fundo escura para contrastar */
+            border: 1px solid #444;
+        }
+
+        /* Definindo um tempo de fade-out (transição suave de ocultação) */
+        .alert {
+            opacity: 1;
+            transition: opacity 0.5s ease-out;
+        }
+
+        .alert.hide {
+            opacity: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main-login">
+        <div class="left-login">
+            <h1>Crie sua Conta<br>Comece a usar nosso sistema!</h1>
+            <img src="{% static 'cerebro.svg' %}" class="left-login-image" alt="Cérebro animação">
+        </div>
+        <div class="right-login">
+            <div class="card-login">
+
+                <h3>Cadastro de Usuário</h3>
+                {% if messages %}
+                <div class="messages-container">
+                    {% for message in messages %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <!-- Formulário em duas colunas -->
+                    <div class="form-row">
+                        <div class="textfield">
+                            <label for="id_username">Nome de Usuário</label>
+                            {{ form.username }}
+                        </div>
+
+                        <div class="textfield">
+                            <label for="id_first_name">Primeiro Nome</label>
+                            {{ form.first_name }}
+                        </div>
+
+                        <div class="textfield">
+                            <label for="id_last_name">Sobrenome</label>
+                            {{ form.last_name }}
+                        </div>
+
+                        <div class="textfield">
+                            <label for="id_email">E-mail</label>
+                            {{ form.email }}
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="textfield">
+                            <label for="id_nascimento">Data de Nascimento</label>
+                            {{ form.nascimento }}
+                        </div>
+
+                        <div class="textfield">
+                            <label for="id_cargo">Cargo</label>
+                            {{ form.cargo }}
+                        </div>
+
+                        <div class="textfield">
+                            <label for="id_password1">Senha</label>
+                            <div class="password-container">
+                                {{ form.password1 }}
+                                <button type="button" class="toggle-password" onclick="togglePassword('id_password1')">
+                                    <i class="fas fa-eye" id="eye-icon"></i>
+                                </button>
+                            </div>
+
+                        </div>
+
+                        <div class="textfield">
+                            <label for="id_password1">Senha</label>
+                            <div class="password-container">
+                                {{ form.password2 }}
+                                <button type="button" class="toggle-password" onclick="togglePassword('id_password2')">
+                                    <i class="fas fa-eye" id="eye-icon"></i>
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+
+                    <button type="submit" class="btn-login">Cadastrar</button>
+                    <a href="{% url 'login' %}"><button type="button" class="btn-cadastro">Voltar ao Login</button></a>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+
+        // Função para alternar visibilidade da senha
+        function togglePassword(id) {
+            var passwordField = document.getElementById(id);
+            var eyeIcon = document.getElementById('eye-icon');
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                eyeIcon.classList.remove("fa-eye");
+                eyeIcon.classList.add("fa-eye-slash");
+            } else {
+                passwordField.type = "password";
+                eyeIcon.classList.remove("fa-eye-slash");
+                eyeIcon.classList.add("fa-eye");
+            }
+        }
+        document.addEventListener('DOMContentLoaded', function () {
+            // Seleciona todas as mensagens
+            const messages = document.querySelectorAll('.messages-container');
+
+            messages.forEach(function (msg) {
+                // Exibe a mensagem por 5 segundos (5000 milissegundos)
+                setTimeout(function () {
+                    msg.style.display = 'none';  // Remove a mensagem
+                }, 5000);
+            });
+        });
+    </script>
+</body>
+
+</html>

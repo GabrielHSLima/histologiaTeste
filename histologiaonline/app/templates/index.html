@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página Inicial - Histologia Online</title>
+
+    <!-- Incluindo Bootstrap CSS (versão mais recente) -->
+    {% load static %}
+    <link rel="icon" type="image/png" href="{% static 'histologia.png' %}" >
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
+    <!-- Estilos personalizados -->
+    <style>
+        body {
+            overflow: auto;
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            /* Cor de fundo clara */
+            margin-top: 56px;
+            /* Compensa a altura da navbar fixa */
+        }
+
+        /* Navbar personalizada */
+        .navbar-dark.bg-success {
+            background-color: #201b2c !important;
+            /* Cor azul personalizada para a navbar */
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            /* Sombra */
+        }
+
+        .navbar-dark .navbar-brand,
+        .navbar-dark .nav-link {
+            color: #77ffc0 !important;
+            font-weight: bold;
+        }
+
+        .navbar-dark .nav-link:hover {
+            color: #00ff88 !important;
+            /* Cor verde ao passar o mouse */
+        }
+
+        /* Botões personalizados */
+        .btn-custom {
+            background-color: #77ffc0;
+            color: #ffffff;
+            border: none;
+            border-radius: 50px;
+            /* Bordas arredondadas */
+            padding: 10px 20px;
+            transition: background-color 0.3s ease;
+            
+        }
+
+        .btn-custom:hover {
+            background-color: #00ff88;
+            /* Cor verde mais escura no hover */
+        }
+
+        /* Jumbotron personalizado */
+        .jumbotron-custom {
+            background-color: #e9ecef;
+            border-radius: 10px;
+            padding: 2rem 2rem;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+            /* Sombra suave */
+        }
+
+        .jumbotron-custom .display-4 {
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+
+        .jumbotron-custom .lead {
+            font-size: 1.25rem;
+        }
+
+        /* Rodapé personalizado */
+        .footer-custom {
+            background-color: #343a40;
+            color: #ffffff;
+            padding: 20px 0;
+            text-align: center;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            position: static;
+        }
+
+        .footer-custom a {
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .footer-custom a:hover {
+            color: #ffffff;
+        }
+        .txt-topo-site{
+            padding: 40px 4%;
+            align-items: center;
+            justify-content: center;
+            gap: 90px;
+        }
+        .txt-topo-site>h1{
+            color: #000;
+            font-size: 42px;
+            font-family: sans-serif;
+        }
+        .txt-topo-site>p{
+            width: 100%;
+            border: none;
+            border-radius: 10px;
+            padding: 15px;
+            background: #514869;
+            color: #f0ffffde;
+            font-size: 12pt;
+            box-shadow: 0px 10px 40px #00000056;
+            outline: none;
+            box-sizing: border-box;
+        }
+        .txt-topo-site>h1{
+            font-family: sans-serif;
+            text-align: center;
+        }
+        .imagem-estudante{
+            width: 180px;
+            height: 180px;
+            position: right;
+}
+        .imagem-grafico{
+            width: 180px;
+            height: 180px;
+            position: right;
+}
+        .imagem-parceria{
+            width: 180px;
+            height: 180px;
+            position: right;
+}   
+        .imagem-livros{
+            width: 180px;
+            height: 180px;
+            position: right;
+}       
+        .imagem-professor{
+            width: 180px;
+            height: 180px;
+            position: right;
+}     
+        .imagem-formatura{
+            width: 180px;
+            height: 180px;
+            position: right;
+}  
+        .imagem-mundo{
+            width: 180px;
+            height: 180px;
+            position: right;
+}
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">Histologia Online</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="/conteudos/">Conteúdos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="/atividades/">Atividades</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="/chat/">Chat</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="/suporte/">Suporte</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="/bibliografia/">Bibliografia</a>
+                    </li>
+                    {% if user.is_superuser %}
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="/admin/">Administração</a>
+                    </li>
+                    {% endif %}
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="{% url 'logout' %}">Logout</a>
+                    </li>
+                    {% endif %}
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Conteúdo Principal -->
+    <div class="container mt-5">
+        <div class="jumbotron jumbotron-custom text-center">
+            <h1 class="display-4">Olá, é bom te ver por aqui, {{user.username}}!</h1>
+            <p class="lead">Esta é a página inicial da Histologia Online</p>
+            <p class="lead">Seja Bem-Vindo(a)!</p>
+            <a class="btn btn-custom" href="/conteudos/">Explorar Conteúdos</a>
+        </div>
+    </div>
+
+    <div class="txt-topo-site">
+        
+        <h1>Transformando seu ensino na busca dos seus sonhos.</h1>
+        <p>Criatividade e inovação andam lado a lado.
+            Com uma combinação única de design impactante,
+            funcionalidade intuitiva e otimização para melhores resultados,
+            estamos prontos para criar o ensino online dos seus sonhos.
+            Nossa equipe dedica-se a transformar ideias em realidade,
+            entregando experiências educativas que inspiram, engajam e capacitam.
+            Acreditamos que cada desafio é uma oportunidade de evoluir,
+            e com as ferramentas certas, você pode alcançar o potencial máximo.
+            Juntos, vamos construir um futuro onde o aprendizado não tem limites,
+            onde o conhecimento é acessível, dinâmico e transformador.
+            O primeiro passo começa com você. Está pronto para inovar?</br>
+        </p>
+        
+            {% load static %}
+            <img src="{% static 'estudante.png' %}" alt="My image" class="imagem-estudante">
+            {% load static %}
+            <img src="{% static 'grafico.png' %}" alt="My image" class="imagem-grafico">
+            {% load static %}
+            <img src="{% static 'parceria.png' %}" alt="My image" class="imagem-parceria">
+            {% load static %}
+            <img src="{% static 'livros.png' %}" alt="My image" class="imagem-parceria">
+            {% load static %}
+            <img src="{% static 'professor.png' %}" alt="My image" class="imagem-professor">
+            {% load static %}
+            <img src="{% static 'formatura.png' %}" alt="My image" class="imagem-formatura">
+            {% load static %}
+            <img src="{% static 'mundo.png' %}" alt="My image" class="imagem-mundo">
+        </p>
+        
+
+    </div>
+    <!-- Rodapé -->
+    <footer class="footer-custom">
+        <div class="container">
+            <p>&copy; 2024 Histologia Online. Todos os direitos reservados.</p>
+            <p>
+                <a href="#">Política de Privacidade</a> |
+                <a href="#">Termos de Serviço</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Incluindo jQuery e Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script>
+        $(document).ready(function () {
+            // Adicione qualquer código JavaScript/jQuery personalizado aqui
+            console.log('Bootstrap 5 customizado carregado com sucesso!');
+        });
+    </script>
+</body>
+
+</html>

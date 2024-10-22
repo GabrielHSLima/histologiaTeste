@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Chat</title>
+    <!-- Incluindo Bootstrap CSS (versão mais recente) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Estilos personalizados -->
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa; /* Cor de fundo clara */
+            margin-top: 56px; /* Compensa a altura da navbar fixa */
+        }
+
+        .chat-container {
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            background-color: #ffffff;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .message-sent {
+            background-color: #d4edda; /* Verde claro */
+            align-self: flex-end;
+        }
+
+        .message-received {
+            background-color: #f1f1f1; /* Cinza claro */
+            align-self: flex-start;
+        }
+
+        .form-container {
+            position: sticky;
+            bottom: 0;
+            background-color: #ffffff;
+            padding: 10px;
+            border-top: 1px solid #dee2e6;
+            z-index: 10;
+        }
+
+        .faq-item {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            cursor: pointer;
+        }
+
+        .faq-item:hover {
+            background-color: #e9ecef; /* Cor de fundo ao passar o mouse */
+        }
+
+        .faq-question {
+            font-size: 1.2rem;
+            margin: 0;
+        }
+
+        .faq-answer {
+            margin: 0.5rem 0 0 0;
+            font-size: 1rem;
+            color: #555;
+            display: none; /* Inicialmente escondido */
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            margin-top: 56px;
+        }
+
+        .navbar-dark.bg-success {
+            background-color: #201b2c !important;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-dark .navbar-brand,
+        .navbar-dark .nav-link {
+            color: #77ffc0 !important;
+            font-weight: bold;
+        }
+
+        .navbar-dark .nav-link:hover {
+            color: #00ff88 !important;
+        }
+
+        .card-custom {
+            height: 300px; /* Define uma altura fixa para os cards */
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+
+        .card-custom:hover {
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+            transform: scale(1.05);
+        }
+
+        .footer-custom {
+            background-color: #343a40;
+            color: #ffffff;
+            padding: 20px 0;
+            text-align: center;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            position: static;
+        }
+
+        .footer-custom a {
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .footer-custom a:hover {
+            color: #ffffff;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">Histologia Online</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="/conteudos/">Conteúdos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="/atividades/">Atividades</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="/chat/">Chat</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="/suporte/">Suporte</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="/bibliografia/">Bibliografia</a>
+                    </li>
+                    {% if user.is_superuser %}
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="/admin/">Administração</a>
+                    </li>
+                    {% endif %}
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="{% url 'logout' %}">Logout</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <!-- Dropdown com sugestões de perguntas -->
+         <br>
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+               Perguntas
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <div class="row">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul class="list-unstyled">
+                                    <li class="dropdown-item" onclick="suggest('Histologia celular')">O que é histologia celular?</li>
+                                    <li class="dropdown-item" onclick="suggest('tipos de tecidos')">Quais são os tipos de tecidos?</li>
+                                    <li class="dropdown-item" onclick="suggest('tecido epitelial')">O que é tecido epitelial?</li>
+                                    <li class="dropdown-item" onclick="suggest('tecido conjuntivo')">O que é tecido conjuntivo?</li>
+                                    <li class="dropdown-item" onclick="suggest('tecido muscular')">O que é tecido muscular?</li>
+                                    <li class="dropdown-item" onclick="suggest('tecido nervoso')">O que é tecido nervoso?</li>
+                                    <li class="dropdown-item" onclick="suggest('microscopia')">O que é microscopia na histologia?</li>
+                                    <li class="dropdown-item" onclick="suggest('preparação de lâminas')">Como é feita a preparação de lâminas?</li>
+                                    <li class="dropdown-item" onclick="suggest('coloração histológica')">O que é coloração histológica?</li>
+                                    <li class="dropdown-item" onclick="suggest('células-tronco')">O que são células-tronco?</li>
+                                    <li class="dropdown-item" onclick="suggest('histologia do sangue')">Qual a histologia do sangue?</li>
+                                    <li class="dropdown-item" onclick="suggest('tecido adiposo')">O que é tecido adiposo?</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul class="list-unstyled">
+                                    <li class="dropdown-item" onclick="suggest('histologia óssea')">O que é histologia óssea?</li>
+                                    <li class="dropdown-item" onclick="suggest('tecido cartilaginoso')">O que é tecido cartilaginoso?</li>
+                                    <li class="dropdown-item" onclick="suggest('células musculares')">Quais são os tipos de células musculares?</li>
+                                    <li class="dropdown-item" onclick="suggest('neurônios')">O que são neurônios?</li>
+                                    <li class="dropdown-item" onclick="suggest('células gliais')">O que são células gliais?</li>
+                                    <li class="dropdown-item" onclick="suggest('histologia do fígado')">Qual a histologia do fígado?</li>
+                                    <li class="dropdown-item" onclick="suggest('histologia dos rins')">Qual a histologia dos rins?</li>
+                                    <li class="dropdown-item" onclick="suggest('histologia do pulmão')">Qual a histologia do pulmão?</li>
+                                    <li class="dropdown-item" onclick="suggest('histologia do coração')">Qual a histologia do coração?</li>
+                                    <li class="dropdown-item" onclick="suggest('histologia da pele')">Qual a histologia da pele?</li>
+                                    <li class="dropdown-item" onclick="suggest('histologia do sistema nervoso')">Qual a histologia do sistema nervoso?</li>
+                                    <li class="dropdown-item" onclick="suggest('histologia do sistema imunológico')">Qual a histologia do sistema imunológico?</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contêiner de chat -->
+        <div class="d-flex flex-column chat-container mt-3" id="chatContainer">
+            <!-- Mensagens de chat -->
+            <div id="messages" class="d-flex flex-column"></div>
+        </div>
+
+        <!-- Formulário de entrada -->
+        <div class="form-container">
+            <form id="chatForm" onsubmit="sendMessage(event)">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="userInput" placeholder="" required disabled>
+                    <button class="btn btn-primary" type="submit">Enviar</button>
+                </div>
+                <button type="button" class="btn btn-danger mt-2" onclick="clearChat()">Limpar Chat</button>
+            </form>
+        </div>
+    </div>
+
+  <!-- Scripts personalizados -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    const responses = {
+    "Histologia celular": "Histologia celular é o estudo das células em diferentes tecidos do organismo.",
+    "tipos de tecidos": "Os tipos de tecidos incluem epitelial, conjuntivo, muscular e nervoso.",
+    "tecido epitelial": "O tecido epitelial reveste superfícies e órgãos do corpo, servindo como proteção.",
+    "tecido conjuntivo": "O tecido conjuntivo suporta, conecta e protege outros tecidos e órgãos do corpo.",
+    "tecido muscular": "O tecido muscular é responsável pelos movimentos do corpo e é composto por células musculares.",
+    "tecido nervoso": "O tecido nervoso é formado por neurônios e células gliais e é responsável pela transmissão de impulsos nervosos.",
+    "microscopia": "A microscopia na histologia é utilizada para observar a estrutura de células e tecidos.",
+    "preparação de lâminas": "A preparação de lâminas envolve processos de fixação, desidratação e coloração para observação microscópica.",
+    "coloração histológica": "A coloração histológica é o processo de aplicar corantes em amostras de tecidos para destacar estruturas celulares.",
+    "células-tronco": "Células-tronco são células que têm a capacidade de se diferenciar em vários tipos celulares.",
+    "histologia do sangue": "A histologia do sangue envolve o estudo das células sanguíneas, como eritrócitos e leucócitos.",
+    "tecido adiposo": "O tecido adiposo é um tipo de tecido conjuntivo que armazena gordura e isola o corpo.",
+    "histologia óssea": "A histologia óssea estuda a estrutura dos ossos, incluindo células como osteócitos.",
+    "tecido cartilaginoso": "O tecido cartilaginoso é um tipo de tecido conjuntivo que fornece suporte e flexibilidade.",
+    "células musculares": "Os tipos de células musculares incluem células musculares esqueléticas, cardíacas e lisas.",
+    "neurônios": "Os neurônios são células especializadas que transmitem impulsos nervosos.",
+    "células gliais": "As células gliais sustentam e protegem os neurônios no sistema nervoso.",
+    "histologia do fígado": "A histologia do fígado estuda os hepatócitos e a estrutura do tecido hepático.",
+    "histologia dos rins": "A histologia dos rins analisa a estrutura dos néfrons, responsáveis pela filtração do sangue.",
+    "histologia do pulmão": "A histologia do pulmão envolve o estudo dos alvéolos e do epitélio respiratório.",
+    "histologia do coração": "A histologia do coração examina o tecido muscular cardíaco e as células do miocárdio.",
+    "histologia da pele": "A histologia da pele investiga as camadas da derme e epiderme, além das células envolvidas.",
+    "histologia do sistema nervoso": "A histologia do sistema nervoso analisa a estrutura dos neurônios e das células gliais.",
+    "histologia do sistema imunológico": "A histologia do sistema imunológico estuda as células e tecidos envolvidos na resposta imune."
+    };
+
+    function suggest(question) {
+        document.getElementById("userInput").value = question;
+    }
+
+    function sendMessage(event) {
+        event.preventDefault();
+        const userInput = document.getElementById("userInput").value;
+        const messagesContainer = document.getElementById("messages");
+
+        // Adiciona a mensagem do usuário
+        const userMessage = document.createElement("div");
+        userMessage.className = "message message-sent";
+        userMessage.textContent = userInput;
+        messagesContainer.appendChild(userMessage);
+
+        // Limpa o campo de entrada
+        document.getElementById("userInput").value = "";
+
+        // Simula uma resposta automática
+        setTimeout(() => {
+            const botMessage = document.createElement("div");
+            botMessage.className = "message message-received";
+
+            // Verifica se a pergunta tem uma resposta correspondente
+            if (responses[userInput]) {
+                botMessage.textContent = "HISTOLOGIA BOT: " + responses[userInput];
+            } else {
+                botMessage.textContent = "HISTOLOGIA BOT: Desculpe, não tenho uma resposta para isso.";
+            }
+
+            messagesContainer.appendChild(botMessage);
+
+            // Rola para o final do contêiner de mensagens
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }, 500);
+    }
+
+    function clearChat() {
+        const messagesContainer = document.getElementById("messages");
+        messagesContainer.innerHTML = ""; // Limpa as mensagens
+    }
+</script>
+</body>
+
+</html>
